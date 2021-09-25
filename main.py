@@ -36,21 +36,8 @@ class P_InstaAPI:
         api = mainlogin.api
 
         if not api.isLoggedIn:
-            print("Failed to login")
+            print("API: Login failed")
             exit()
-
-        uploaders = []
-        for x in range(0, 2):
-            uploaderpath = Path(f"sessions/{self.username}uploader_{x}.session")
-
-            if os.path.exists(uploaderpath):
-                uapi = pickle.load(open(uploaderpath, "rb"))
-                if not uapi.isLoggedIn:
-                    uapi.login()
-            else:
-                uapi = P_InstagramAPI(self.username, self.password)
-                uapi.login()
-                pickle.dump(uapi, open(uploaderpath, "wb"))
 
         self.api = api
 
@@ -226,7 +213,7 @@ class P_InstagramAPI:
         else:
             if response.status_code != 405:
                 # print("Request return " + str(response.status_code) + " error!")
-                print(colored("login failed", "red"))
+                print(colored("API: Login failed", "red"))
                 try: os.remove("secrets.pickle")
                 except: pass
 
@@ -265,6 +252,7 @@ class P_InstagramAPI:
 
 class P_InstagramLogin(object):
     def __init__(self, username, password, folder=Path("./")):
+        encrypt_creds = fernet.Fernet(key)
         self.username = username
         self.password = password
         self.path = Path(str(folder) + "/" + username + ".session")
@@ -280,9 +268,20 @@ class P_InstagramLogin(object):
                 shutil.rmtree("sessions/")
                 exit()
 
+            self.api.password = encrypt_creds.encrypt(
+                str.encode(self.password)
+            )
             pickle.dump(self.api, open(self.path, "wb"))
+            self.api.password = encrypt_creds.decrypt(
+                self.api.password
+            )
         else:
             self.api = pickle.load(open(self.path, "rb"))
+            self.api.password = encrypt_creds.decrypt(
+                self.api.password
+            )
+
+            
             if not self.api.isLoggedIn:
                 print("logging in " + username)
                 self.api.login()
@@ -439,9 +438,9 @@ class Scraper:
             user_id = cookie_jar['ds_user_id']
             print("session_id:", session_id)
         else:
-            print(colored(f"login failed {login_response.text}", "red"))
+            print(colored(f"cloudscraper: login failed {login_response.text}", "red"))
             os.remove("secrets.pickle")
-            quit()
+            exit()
 
         try:
             time.sleep(random.randrange(2, 5))
@@ -530,7 +529,7 @@ class Scraper:
             else:
                 total_pending += self.pending_users["total_requests"][0]
 
-            # Use this to get rate of users
+            # Use this to get the rate of users
 
             self.new_requests = newRequest
             print("\n")
@@ -551,7 +550,7 @@ class Scraper:
             with open(f"{self.username}_pending_users.json", "w") as f:
                 json.dump(self.pending_users, f, indent=4, sort_keys=True)
             print(f"\n\n{self.username} has {self.pending_users['total_requests'][0]} pending follow requests")
-            total_pending += self.pending_users["total_requests"][0]
+            total_pending = self.pending_users["total_requests"][0]
 
         self.send_msg(total_pending)
 
@@ -625,9 +624,8 @@ class Scraper:
                 f"User: @{self.username}\n"
                 f"User ID: {self.user_id}"
             )
-        except Exception as e:
-            print("Unable to send DM ->", e)
-            print(self.p_api.api.LastResponse)
+        except Exception:
+            print(colored("Unable to send DM", "red"))
 
     def run(self):
         self.waiting = random.randint(3600, 4200)
