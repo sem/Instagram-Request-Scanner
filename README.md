@@ -72,7 +72,7 @@ pip install -r requirements.txt
 ## Usage
 At the beginning, you will be asked to log in with your Instagram account. Your username and password will be encrypted and stored in ```secrets.pickle```, so you don't have to manually log in every time the script runs.  There will also be a ```sessions``` folder created to have the messages sent to your account. Once you're logged in, it will automatically get your pending follow requests and a countdown for the next run will be displayed.
 
-<img src="https://user-images.githubusercontent.com/78478073/134772574-fcc1a33a-5956-402c-8797-e13984699d3d.png" width="330"> <img src="https://user-images.githubusercontent.com/78478073/134772621-4a31e48a-9c14-4bbc-989a-e170642d49e3.png" width="330"> <img src="https://user-images.githubusercontent.com/78478073/134777070-ab2afea1-e274-460d-aead-212a0d2e3c49.png" width="330">
+<img src="https://user-images.githubusercontent.com/78478073/134772574-fcc1a33a-5956-402c-8797-e13984699d3d.png" width="330"> <img src="https://user-images.githubusercontent.com/78478073/134772621-4a31e48a-9c14-4bbc-989a-e170642d49e3.png" width="330"> <img src="https://user-images.githubusercontent.com/78478073/134784244-8a06f079-52ea-46a8-9199-6eeffc227079.png" width="330">
 
 > As you can see, your follow requests will be shown past the 200 or 1000 limit while the browser version of Instagram still shows 200. <br/>
 
