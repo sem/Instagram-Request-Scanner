@@ -36,7 +36,7 @@ class P_InstaAPI:
         api = mainlogin.api
 
         if not api.isLoggedIn:
-            print("Failed to login")
+            print("API: login failed")
             exit()
 
         self.api = api
@@ -185,9 +185,11 @@ class P_InstagramAPI:
             return response.status_code, json.loads(response.text)
         else:
             if response.status_code != 405:
-                print(colored("login failed", "red"))
-                os.remove("secrets.pickle")
-                shutil.rmtree("sessions/")
+                print(colored("API: login failed", "red"))
+                try: os.remove("secrets.pickle")
+                except: pass
+                try: shutil.rmtree("sessions/")
+                except: pass
                 exit()
 
             try:
@@ -230,7 +232,7 @@ class P_InstagramLogin(object):
             self.api.password = encrypt_creds.decrypt(self.api.password)
 
             if not self.api.isLoggedIn:
-                print("logging in " + username)
+                # print("logging in " + username)
                 self.api.login()
                 if self.api.isLoggedIn:
                     pickle.dump(self.api, open(self.path, "wb"))
@@ -385,7 +387,7 @@ class Scraper:
             user_id = cookie_jar['ds_user_id']
             print("session_id:", session_id)
         else:
-            print(colored(f"login failed {login_response.text}", "red"))
+            print(colored(f"cloudscraper: login failed {login_response.text}", "red"))
             os.remove("secrets.pickle")
             quit()
 
@@ -577,9 +579,8 @@ class Scraper:
 
     def run(self):
         self.waiting = random.randint(3600, 4200)
-        self.now = None
 
-        async def runScraper():
+        def runScraper():
             while True:
                 if self.new_requests >= 50:
                     self.waiting = random.randint(2400, 3000)
@@ -590,8 +591,6 @@ class Scraper:
                 if self.new_requests >= 150:
                     self.waiting = random.randint(900, 1200)
 
-                self.now = time.perf_counter()
-
                 self.pending_requests()
                 self.process_users()
                 self.remove = "0"
@@ -601,30 +600,12 @@ class Scraper:
                 for e in range(self.period):
                     self.p_.append(".")
 
-                self.start = time.perf_counter()
-
                 self.accept_all()
+                
+                print(colored(f"[{time.ctime()}] Script will run again in {round((self.waiting/60))} minutes", "blue"))
+                time.sleep(self.waiting)
 
-                await asyncio.sleep(self.waiting)
-
-        async def info():
-            info_ = "Script will run again in "
-            while True:
-                now_ = time.perf_counter() - self.now
-                mins = datetime.timedelta(seconds=self.waiting - now_)
-
-                sys.stdout.write(colored("\r" + info_ + str(mins), "blue"))
-                sys.stdout.flush()
-
-                await asyncio.sleep(0.01)
-
-        async def main():
-            task1 = asyncio.create_task(runScraper())
-            task2 = asyncio.create_task(info())
-            await task1
-            await task2
-
-        asyncio.run(main())
+        runScraper()
 
     def banner(self):
         print(colored('''
