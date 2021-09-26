@@ -10,7 +10,6 @@ from cryptography import fernet
 import os
 import bs4
 import sys
-import asyncio
 import shutil
 import requests, uuid, hashlib, hmac, urllib, string
 from pathlib import Path
