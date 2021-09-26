@@ -23,7 +23,7 @@ Instagram stops displaying new incoming following requests once it reaches a tho
 
 ### Accepting follow requests
 Since it's recommended to start your count when your requests are below 200, there is an option to automatically approve all your pending follow requests. All pending requests will be accepted **only in the first run**. 
-By changing ```accept``` to ```True``` in line 624, all your pending follow requests will be accepted. If it's set to ```False```, it will just directly move on to counting your incoming requests. Note that none of the followers that get accepted will be appended to the JSON. If you've already had a first run, but wish to accept followers again; simply delete ```first_run.json```.
+By changing ```accept``` to ```True``` in line 621, all your pending follow requests will be accepted. If it's set to ```False```, it will just directly move on to counting your incoming requests. Note that none of the followers that get accepted will be appended to the JSON. If you've already had a first run, but wish to accept followers again; simply delete ```first_run.json```.
 
 ```py
 if __name__ == "__main__":
