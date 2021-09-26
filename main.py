@@ -35,7 +35,7 @@ class P_InstaAPI:
         api = mainlogin.api
 
         if not api.isLoggedIn:
-            print("API: login failed")
+            print(colored(f"[{time.ctime()}] API: login failed", "red"))
             exit()
 
         self.api = api
@@ -184,7 +184,7 @@ class P_InstagramAPI:
             return response.status_code, json.loads(response.text)
         else:
             if response.status_code != 405:
-                print(colored("API: login failed", "red"))
+                print(colored(f"[{time.ctime()}] API: login failed", "red"))
                 try: os.remove("secrets.pickle")
                 except: pass
                 try: shutil.rmtree("sessions/")
@@ -219,7 +219,7 @@ class P_InstagramLogin(object):
             self.api = P_InstagramAPI(self.username, self.password)
             try:
                 self.api.login()
-            except KeyError:  # logged_in_user -> couldn't login
+            except KeyError:  # logged_in_user -> couldn't login 
                 shutil.rmtree("sessions/")
                 exit()
 
@@ -231,7 +231,6 @@ class P_InstagramLogin(object):
             self.api.password = encrypt_creds.decrypt(self.api.password)
 
             if not self.api.isLoggedIn:
-                # print("logging in " + username)
                 self.api.login()
                 if self.api.isLoggedIn:
                     pickle.dump(self.api, open(self.path, "wb"))
@@ -307,7 +306,6 @@ class Scraper:
         self.rounds = 0
 
     def progress(self, user, e, total):
-
         total_max = total
         total = total_max - 1
 
@@ -377,7 +375,7 @@ class Scraper:
         json_data = json.loads(login_response.text)
         # print(json_data)
         if json_data.get("authenticated"):
-            print(colored("[+] Successfully logged in", "green"))
+            print(colored("\n[+] Successfully logged in", "green"))
             cookies = login_response.cookies
             cookie_jar = cookies.get_dict()
             self.csrf_token = cookie_jar['csrftoken']
@@ -386,7 +384,7 @@ class Scraper:
             user_id = cookie_jar['ds_user_id']
             print("session_id:", session_id)
         else:
-            print(colored(f"cloudscraper: login failed {login_response.text}", "red"))
+            print(colored(f"[{time.ctime()}] cloudscraper: login failed {login_response.text}", "red"))
             os.remove("secrets.pickle")
             quit()
 
@@ -395,21 +393,21 @@ class Scraper:
             user = self.scraper.get(f"https://www.instagram.com/{self.username}/")
             logged_user = str(bs4.BeautifulSoup(user.text, 'lxml').title.text).split('•')[0]
             if "is on Instagram " in logged_user:
-                print(colored(f"[+] {time.ctime()} logged in as {logged_user.replace('is on Instagram', '')}", "green"))
+                print(colored(f"\n[+] {time.ctime()} logged in as {logged_user.replace('is on Instagram', '')}", "blue"))
             else:
                 try:
-                    print(colored(f"[+] {time.ctime()} logged in as {logged_user.replace('is on Instagram', '')}", "green"))
+                    print(colored(f"\n[+] {time.ctime()} logged in as {logged_user.replace('is on Instagram', '')}", "blue"))
                 except:
-                    print(colored(f"[+] {time.ctime()} logged in as {logged_user}", "green"))
+                    print(colored(f"\n[+] {time.ctime()} logged in as {logged_user}", "blue"))
 
         except Exception:
-            print(f"logged in as {self.username}")
+            print(colored(f"\n[+] logged in as {self.username}", "blue"))
 
         self.user_id = json_data['userId']
         self.uuid = self.generateUUID(True)
 
     def pending_requests(self):
-        # Get pending users
+        # Get the pending users
 
         parameter = {"variables": {"fetch_media_count": 0, "fetch_suggested_count": 30, "ignore_cache": True,
                                    "filter_followed_friends": True, "seen_ids": [], "include_reel": True}}
@@ -423,7 +421,7 @@ class Scraper:
         }
 
         r = self.scraper.get("https://i.instagram.com/api/v1/friendships/pending/", headers=headers)
-        print(f"\n\n{('-'*48)}\n\n[+] Pending follow requests")
+        print(f"\n{('-'*48)}\n\n[+] Pending follow requests")
 
         pending = []
         pending_total = 0
@@ -434,10 +432,10 @@ class Scraper:
             pending_total += 1
             self.totalProgress.append(data)
 
-        print()
+        #print()
 
         if self.acceptRequests:
-            # Accept obtained requests
+            # Accept the obtained requests
             user_num = 1
             for user in pending:
                 self.accept_request(user, user_num)
@@ -470,18 +468,17 @@ class Scraper:
                     newRequest += 1
                     print(colored(f"[+] New request from {user}", "green"))
                     processed_users.append(user)
-                    print()
+                    #print()
             if len(self.pending_users["username"]) >= 200:
                 # If pending requests are more than 200 add to previous data count
                 total_pending += data["total_requests"][0] + newRequest
             else:
                 total_pending += self.pending_users["total_requests"][0]
 
-            # Use this to get rate of users
+            # Use this to get the rate of users
 
             self.new_requests = newRequest
-            print("\n")
-            print(f"{self.username} has {total_pending} pending follow requests")
+            print(f"\n{self.username} has {total_pending} pending follow requests")
             f.close()
             f2 = open(f"{self.username}_pending_users.json", "w")
             if self.acceptRequests:
@@ -503,7 +500,7 @@ class Scraper:
         self.send_msg(total_pending)
 
     def get_user_id(self, username):
-        # Get users info
+        # Get the users info
         id = self.scraper.get(f"https://www.instagram.com/{username}/?__a=1")
         id_data = id.json()
         user_data = id_data["graphql"]["user"]
@@ -540,7 +537,7 @@ class Scraper:
                     sys.stdout.write("\r[+] No more pending follow requests to accept")
                     sys.stdout.flush()
                     time.sleep(0.5)
-                    # If there are no more pending requests break
+                    # If there are no more pending requests then break
                     break
                 else:
                     self.pending_requests()
@@ -601,7 +598,7 @@ class Scraper:
 
                 self.accept_all()
                 
-                print(colored(f"[{time.ctime()}] Script will run again in {round((self.waiting/60))} minutes", "blue"))
+                print(colored(f"[{time.ctime()}] Next run in {round((self.waiting/60))} minutes", "blue"))
                 time.sleep(self.waiting)
 
         runScraper()
@@ -614,7 +611,7 @@ class Scraper:
 ██╔══██╗██╔══╝  ██║▄▄ ██║██║   ██║██╔══╝  ╚════██║   ██║       ╚════██║██║     ██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗
 ██║  ██║███████╗╚██████╔╝╚██████╔╝███████╗███████║   ██║       ███████║╚██████╗██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║
 ╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝   ╚═╝       ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═
-        ''', "blue"), end="\n\n")
+        ''', "blue"), end="\n")
 
 if __name__ == "__main__":
     '''
