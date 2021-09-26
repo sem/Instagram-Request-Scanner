@@ -478,7 +478,7 @@ class Scraper:
             # Use this to get the rate of users
 
             self.new_requests = newRequest
-            print(f"\n{self.username} has {total_pending} pending follow requests")
+            print(f"\n\n{self.username} has {total_pending} pending follow requests")
             f.close()
             f2 = open(f"{self.username}_pending_users.json", "w")
             if self.acceptRequests:
