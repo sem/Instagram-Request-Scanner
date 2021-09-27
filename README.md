@@ -25,38 +25,40 @@ Instagram stops displaying new incoming following requests once it reaches a tho
 Since it's recommended to start your count when your requests are below 200, there is an option to automatically approve all your pending follow requests. All pending requests will be accepted **only in the first run**. 
 By changing ```accept``` to ```True``` in line 621, all your pending follow requests will be accepted. If it's set to ```False```, it will just directly move on to counting your incoming requests. Note that none of the followers that get accepted will be appended to the JSON. If you've already had a first run, but wish to accept followers again; simply delete ```first_run.json```.
 
-```py
-if __name__ == "__main__":
-    '''
-    To accept requests set Scraper(accept=True)
-
-    Will only accept the first run to make sure your requests are below 200
-    '''
-    Scraper(accept=False)
-```
-
+> ```py
+> if __name__ == "__main__":
+>     '''
+>     To accept requests set Scraper(accept=True)
+> 
+>     Will only accept the first run to make sure your requests are below 200
+>     '''
+>     Scraper(accept=False)
+> ```
+>
 > In this example, ```Scraper``` is set to ```False```, so none of the current pending follow requests will be accepted.
 
 ### Interval
 The standard interval between each run will be randomized between 2400 and 3000 seconds. It will be shortened as you get more requests, since you can only get to see the 200 most recent users that requested a follow. By shortening the interval, you can avoid letting new requests get past 200, so your count will stay accurate. <br/>
 
-```py
-if self.new_requests >= 50:
-    self.waiting = random.randint(2400, 3000)
-                    
-if self.new_requests >= 100:
-    self.waiting = random.randint(1800, 2400)
-
-if self.new_requests >= 150:
-    self.waiting = random.randint(900, 1200)
-```
-
+> ```py
+> if self.new_requests >= 50:
+>     self.waiting = random.randint(2400, 3000)
+>                     
+> if self.new_requests >= 100:
+>     self.waiting = random.randint(1800, 2400)
+> 
+> if self.new_requests >= 150:
+>     self.waiting = random.randint(900, 1200)
+> ```
+>
 > Once your run has finished and the amount of new received requests is below 50, the standard interval will be used.
 
 ### Messages
-Since the code has to be running somewhere 24 hours a day in order to get an accurate amount, it might be frustrating if you have to go to your console every time to look at your total amount of requests. Therefore, each run a message will be sent to your Instagram account which will include the total amount of the pending follow requests, the date, username, etc.
+Since the code has to be hosted somewhere to get an accurate count, it won't make it easy to access your console very quickly to look at your total amount of requests. That's why a message will be sent to your account at each run which will include the amount of requests, the current date, etc.
 
-<img src="https://user-images.githubusercontent.com/78478073/134776231-c03d1b82-dbaf-4a94-8767-a98de3450ae4.png" width="330"> <img src="https://user-images.githubusercontent.com/78478073/134776317-24d32298-fa68-4b5b-94de-557a8ea1bb8b.png" width="330">
+> <p align="left">
+> <img width="1551" alt="134870026-cb4d7ad8-b749-4773-a7e7-d66af4a3c72c" src="https://user-images.githubusercontent.com/78478073/134981356-6939b8a8-abd6-48f0-aec2-3ad4ca222216.png">
+> </p>
 
 ## Getting started
 ### Installation 
@@ -70,10 +72,13 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-At the beginning, you will be asked to log in with your Instagram account. Your username and password will be encrypted and stored in ```secrets.pickle```, so you don't have to manually log in every time the script runs.  There will also be a ```sessions``` folder created to have the messages sent to your account. Once you're logged in, it will automatically get your pending follow requests and a countdown for the next run will be displayed.
+At the beginning, you will be asked to log in with your Instagram account. Your username and password will be encrypted and stored in ```secrets.pickle``` so you don't have to manually log in every time the script runs.  There will also be a ```sessions``` folder created which will also include your credentials encrypted with the same key as ```secrets.pickle``` . The ```sessions``` folder is required to log in with the API, so the messages with your data can be sent to your account. Once you're logged in, it will automatically get your pending follow requests and a countdown for the next run will be displayed.
 
-<img src="https://user-images.githubusercontent.com/78478073/134772574-fcc1a33a-5956-402c-8797-e13984699d3d.png" width="330"> <img src="https://user-images.githubusercontent.com/78478073/134772621-4a31e48a-9c14-4bbc-989a-e170642d49e3.png" width="330"> <img src="https://user-images.githubusercontent.com/78478073/134784244-8a06f079-52ea-46a8-9199-6eeffc227079.png" width="330">
-
+> <p align="left">
+>  <img width="1552" alt="Screenshot 2021-09-27 at 10 08 54" src="https://user-images.githubusercontent.com/78478073/134871453-ba531feb-e996-4a9e-a0ac-246a3974dacc.png">
+> <img width="686" alt="Screenshot 2021-09-27 at 21 54 16" src="https://user-images.githubusercontent.com/78478073/134976017-f6401906-b254-4ce6-8d70-876d4fba549c.png">
+> </p>
+>
 > As you can see, your follow requests will be shown past the 200 or 1000 limit while the browser version of Instagram still shows 200. <br/>
 
 ## Contributing
