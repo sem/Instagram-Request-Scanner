@@ -57,7 +57,7 @@ The standard interval between each run will be randomized between 2400 and 3000 
 Since the code has to be hosted somewhere to get an accurate count, it won't make it easy to access your console very quickly to look at your total amount of requests. That's why a message will be sent to your account at each run which will include the amount of requests, the current date, etc.
 
 > <p align="left">
-> <img width="1551" alt="134870026-cb4d7ad8-b749-4773-a7e7-d66af4a3c72c" src="https://user-images.githubusercontent.com/78478073/134981356-6939b8a8-abd6-48f0-aec2-3ad4ca222216.png">
+> <img width="1551" alt="134870026-cb4d7ad8-b749-4773-a7e7-d66af4a3c72c" src="https://user-images.githubusercontent.com/78478073/134982788-16ad44e3-0a28-44e8-856a-6434bcab5245.png">
 > </p>
 
 ## Getting started
