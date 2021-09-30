@@ -61,7 +61,7 @@ Since the code has to be hosted somewhere to get an accurate count, it won't mak
 > <img width="1551" alt="134870026-cb4d7ad8-b749-4773-a7e7-d66af4a3c72c" src="https://user-images.githubusercontent.com/78478073/134982788-16ad44e3-0a28-44e8-856a-6434bcab5245.png">
 > <img width="1552" alt="Screenshot 2021-09-30 at 15 51 49" src="https://user-images.githubusercontent.com/78478073/135468401-b02bed41-fdb0-4c64-88e0-31fc9a259353.png">
 > </p>
-> You will also be notified when your account is still accepting follow requests
+> As shown in the picture above, you will also be notified when your account is still accepting requested users instead of checking for new incoming follow requests.
 
 ## Getting started
 ### Installation 
