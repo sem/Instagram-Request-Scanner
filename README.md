@@ -22,15 +22,16 @@ Instagram stops displaying new incoming following requests once it reaches a tho
 - Another disadvantage is that you have to **start with less than 200 pending follow requests**, to have an accurate count. Otherwise, it will only take the 200 most recent requests and start from there.
 
 ### Accepting follow requests
-Since it's recommended to start your count when your requests are below 200, there is an option to automatically approve all your pending follow requests. All pending requests will be accepted **only in the first run**. 
-By changing ```accept``` to ```True``` in line 621, all your pending follow requests will be accepted. If it's set to ```False```, it will just directly move on to counting your incoming requests. Note that none of the followers that get accepted will be appended to the JSON. If you've already had a first run, but wish to accept followers again; simply delete ```first_run.json```.
+Since it's recommended to start your count when your requests are below 200, there is an option to automatically approve all your pending follow requests. For each run, 200 users will be accepted until your pending requests are below the 200 limit. Once it's below 200, a file named ```accept.json``` will be created, so no more requests will be accepted when appending them to your total amount in ```username_pending_users.json```. Note that none of the users that get accepted will be appended to that JSON; only the users that request a follow after accepting is finished will be appended to the count. If you have already accepted followers, but wish to accept again, then you can delete ```accept.json```. 
+By changing ```accept``` to ```True``` at line 631, all your pending follow requests will be accepted. If it's set to ```False```, it will just directly move on to counting your incoming requests. 
 
 > ```py
 > if __name__ == "__main__":
 >     '''
->     To accept requests set Scraper(accept=True)
+>     To accept follow requests -> Scraper(accept=True)
 > 
->     Will only accept the first run to make sure your requests are below 200
+>     Will accept every run until your follow requests are below 200
+>     Can only accept a maximum amount of 200 requested users per run
 >     '''
 >     Scraper(accept=False)
 > ```
@@ -56,9 +57,11 @@ The standard interval between each run will be randomized between 2400 and 3000 
 ### Messages
 Since the code has to be hosted somewhere to get an accurate count, it won't make it easy to access your console very quickly to look at your total amount of requests. That's why a message will be sent to your account at each run which will include the amount of requests, the current date, etc.
 
-> <p align="left">
+> <p align="center">
 > <img width="1551" alt="134870026-cb4d7ad8-b749-4773-a7e7-d66af4a3c72c" src="https://user-images.githubusercontent.com/78478073/134982788-16ad44e3-0a28-44e8-856a-6434bcab5245.png">
+> <img width="1552" alt="Screenshot 2021-09-30 at 15 51 49" src="https://user-images.githubusercontent.com/78478073/135468401-b02bed41-fdb0-4c64-88e0-31fc9a259353.png">
 > </p>
+> You will also be notified when your account is still accepting follow requests
 
 ## Getting started
 ### Installation 
@@ -74,12 +77,12 @@ pip install -r requirements.txt
 ## Usage
 At the beginning, you will be asked to log in with your Instagram account. Your username and password will be encrypted and stored in ```secrets.pickle``` so you don't have to manually log in every time the script runs.  There will also be a ```sessions``` folder created which will also include your credentials encrypted with the same key as ```secrets.pickle``` . The ```sessions``` folder is required to log in with the API, so the messages with your data can be sent to your account. Once you're logged in, it will automatically get your pending follow requests and a countdown for the next run will be displayed.
 
-> <p align="left">
+> <p align="center">
 >  <img width="1552" alt="Screenshot 2021-09-27 at 10 08 54" src="https://user-images.githubusercontent.com/78478073/134871453-ba531feb-e996-4a9e-a0ac-246a3974dacc.png">
 > <img width="686" alt="Screenshot 2021-09-27 at 21 54 16" src="https://user-images.githubusercontent.com/78478073/134976017-f6401906-b254-4ce6-8d70-876d4fba549c.png">
 > </p>
 >
-> As you can see, your follow requests will be shown past 200 or 1000 while the browser version of Instagram still shows 200. <br/>
+> As you can see, your follow requests will be shown past 200 while the browser version of Instagram still only show 200 requests. <br/>
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
