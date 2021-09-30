@@ -628,4 +628,4 @@ if __name__ == "__main__":
     Will accept every run until your follow requests are below 200
     Can only accept a maximum amount of 200 requested users per run
     '''
-    Scraper(accept=True)
+    Scraper(accept=False)
