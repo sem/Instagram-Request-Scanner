@@ -79,7 +79,7 @@ At the beginning, you will be asked to log in with your Instagram account. Your 
 > <img width="686" alt="Screenshot 2021-09-27 at 21 54 16" src="https://user-images.githubusercontent.com/78478073/134976017-f6401906-b254-4ce6-8d70-876d4fba549c.png">
 > </p>
 >
-> As you can see, your follow requests will be shown past the 200 or 1000 limit while the browser version of Instagram still shows 200. <br/>
+> As you can see, your follow requests will be shown past 200 or 1000 while the browser version of Instagram still shows 200. <br/>
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
