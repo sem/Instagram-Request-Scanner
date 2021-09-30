@@ -3,6 +3,7 @@
 ## Table of Contents
 - [About the project](#about-the-project)
   * [Disadventages](#disadventages)
+  * [Solution](#solution)
   * [Accepting follow requests](#accepting-follow-requests)
   * [Interval](#interval)
   * [Messages](#messages)
