@@ -14,7 +14,12 @@
 - [License](#license)
 
 ## About the project
-Instagram stops displaying new incoming following requests once it reaches a thousand users. Even though you will still get the follow requests, they will not show you the exact amount anymore. Instagram never publicly announced why, but the most likely reason for this is, so the larger private accounts will not take advantage of this. Without this limit, owners of these accounts can clickbait thousands of people into requesting a follow without showing them any content at all. The official Instagram app on IOS or Android will show a maximum amount of 1000 pending follow requests, but on the browser version just 200. There is only one solution to count past these limits, and that is by storing a count of the 200 recent requests in a loop, and appending new incoming follow requests to that count.
+Instagram will stop showing you the exact amount of your follow requests once it reaches a thousand users (or 200 on the browser version). They never publicly announced why, but the most likely reason for this is, so the private accounts with thousands of followers will not take advantage of this. Without this limit, the people that own these accounts have the opportunity to clickbait thousands of users into requesting a follow without having to show them any content at all. The official Instagram app on IOS or Android will show a maximum amount of 1000 pending follow requests, but on the browser version just 200. 
+
+There is only one solution to count past these limits, and that is by storing a count of the 200 recent requests in a loop, and appending new incoming follow requests to that count.
+
+### Solution
+- The only solution for counting past these limits is by scraping the list of the recent 200 users that requested a follow in the browser version of Instagram. You can store the users in a JSON file along with a count for every user in that list. Everytime you get a new follow request, one of the users in the list on Instagram will be replaced with a new user. Since all previous users are stored in the JSON, we will who the new user is and we can append him to the count.
 
 ### Disadventages
 - One disadvantage is that the script **requires to be running 24 hours a day** to keep track of new incoming follow requests. Therefore, there has to be a decent amount of logins per day to make this work, but it's dependent on how many new follow requests your account gets. While Instagram has never publicly announced how many times you can log in per day, the script will try its best to avoid your account getting any type of punishment. The interval between every run (login) will be based on the number of requests it got in the previous run. <br/>
