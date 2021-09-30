@@ -516,7 +516,7 @@ class Scraper:
         username = requested_user.get("username")
         accept = self.scraper.post(f"https://www.instagram.com/web/friendships/{id}/approve/", headers=headers)
         sys.stdout.write(colored(
-            f"\r[+] {round(current_user / len(self.totalProgress) * 100, 2)}% accepted [{username}]",
+            f"\r[+] {round(current_user / len(self.totalProgress) * 100, 2)}% accepted",
             "green"))
         sys.stdout.flush()
         time.sleep(0.1)
