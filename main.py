@@ -13,6 +13,7 @@ import sys
 import shutil
 import requests, uuid, hashlib, hmac, urllib, string
 from pathlib import Path
+from colorama import Fore
 # Turn off InsecureRequestWarning
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
@@ -36,8 +37,10 @@ class P_InstaAPI:
 
         if not api.isLoggedIn:
             print(colored(f"[{time.ctime()}] API: login failed", "red"))
-            os.remove("secrets.pickle")
-            shutil.rmtree("sessions/")
+            try: os.remove("secrets.pickle")
+            except: pass
+            try: shutil.rmtree("sessions/")
+            except: pass
             exit()
 
         self.api = api
@@ -186,8 +189,10 @@ class P_InstagramAPI:
         else:
             if response.status_code != 405:
                 print(colored(f"[{time.ctime()}] API: login failed", "red"))
-                os.remove("secrets.pickle")
-                shutil.rmtree("sessions/")
+                try: os.remove("secrets.pickle")
+                except: pass
+                try: shutil.rmtree("sessions/")
+                except: pass
                 exit()
 
             try:
@@ -368,7 +373,9 @@ class Scraper:
     def login(self):
         # Logging the user in
         login_response = self.scraper.post(self.login_url, data=self.payload, headers=self.login_header)
+        # print(login_response, login_response.text)
         json_data = json.loads(login_response.text)
+        # print(json_data)
         if json_data.get("authenticated"):
             print(colored("\n[+] Successfully logged in", "green"))
             cookies = login_response.cookies
@@ -380,14 +387,17 @@ class Scraper:
             print("session_id:", session_id)
         else:
             print(colored(f"[{time.ctime()}] cloudscraper: login failed {login_response.text}", "red"))
-            os.remove("secrets.pickle")
-            shutil.rmtree("sessions/")
+            try: os.remove("secrets.pickle")
+            except: pass
+            try: shutil.rmtree("sessions/")
+            except: pass
             exit()
 
         try:
             time.sleep(random.randrange(2, 5))
             user = self.scraper.get(f"https://www.instagram.com/{self.username}/")
             logged_user = str(bs4.BeautifulSoup(user.text, 'lxml').title.text).split('•')[0]
+
             if "is on Instagram " in logged_user:
                 print(colored(f"\n[+] {time.ctime()} logged in as {logged_user.replace('is on Instagram', '')}", "blue"))
             else:
@@ -417,7 +427,7 @@ class Scraper:
         }
 
         r = self.scraper.get("https://i.instagram.com/api/v1/friendships/pending/", headers=headers)
-        print(f"\n{('═'*48)}\n\n[+] Pending follow requests")
+        print(f"\n{('-'*48)}\n\n[+] Pending follow requests")
 
         pending = []
         pending_total = 0
@@ -472,7 +482,7 @@ class Scraper:
             # Use this to get the rate of users
 
             self.new_requests = newRequest
-            print(f"\n{self.username} has {total_pending} pending follow requests")
+            print(f"\n\n{self.username} has {total_pending} pending follow requests")
             f.close()
             f2 = open(f"{self.username}_pending_users.json", "w")
             if self.acceptRequests:
@@ -488,7 +498,7 @@ class Scraper:
         else:
             with open(f"{self.username}_pending_users.json", "w") as f:
                 json.dump(self.pending_users, f, indent=4, sort_keys=True)
-            print(f"\n{self.username} has {self.pending_users['total_requests'][0]} pending follow requests")
+            print(f"\n\n{self.username} has {self.pending_users['total_requests'][0]} pending follow requests")
             total_pending = self.pending_users["total_requests"][0]
 
         self.send_msg(total_pending)
@@ -503,7 +513,7 @@ class Scraper:
         return {"id": user_id, "username": full_name}
 
     def accept_request(self, accept_user, current_user):
-        # Accept the parsed user
+        # Called to accept the parsed user
         headers = {
             'content-length': '0',
             'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, '
@@ -515,42 +525,39 @@ class Scraper:
         id = requested_user.get("id")
         username = requested_user.get("username")
         accept = self.scraper.post(f"https://www.instagram.com/web/friendships/{id}/approve/", headers=headers)
-        sys.stdout.write(colored(
-            f"\r[+] {round(current_user / len(self.totalProgress) * 100, 2)}% accepted",
-            "green"))
-        sys.stdout.flush()
-        time.sleep(0.1)
+        if 'status":"ok' in accept.text:
+            accepted += 1
+            print(colored(f'[+] Accepted: @{username}', 'green'))
+        else:
+            print(colored('[-] Failed to accept user', 'red'))
 
     def accept_all(self):
-        if not os.path.exists("accept.json") and self.acceptRequests:
-            sys.stdout.write("\r[+] Accepting follow requests")
+        if self.acceptRequests:
+            sys.stdout.write("\r[+] Accepting pending follow requests")
             sys.stdout.flush()
             time.sleep(1)
-
+            
             while True:
-                # if len(self.pending_users['username']) == 0:
                 if len(self.pending_users['username']) < 200:
-                    sys.stdout.write("\r[+] Reached the maximum amount to accept for this run, will check again in next run")
+                    sys.stdout.write("\r[+] No more pending follow requests to accept")
                     sys.stdout.flush()
                     time.sleep(1)
+                    self.acceptRequests = False
                     break
+
                 else:
                     self.pending_requests()
                     self.process_users()
-                    time.sleep(random.randrange(3, 7))
-                
-            sys.stdout.write(f"\r[+] No more follow requests to accept, all incoming requests will not be accepted anymore")
-            sys.stdout.flush()
+                    time.sleep(1)
 
             f = open("accept.json", "w")
             json.dump({'accept': False}, f)
             f.close()
 
             print("\n")
-            self.acceptRequests = False
+
         else:
             pass
-            # Still needs to accept
 
     def generateUUID(self, type_):
         generated_uuid = str(uuid.uuid4())
@@ -561,22 +568,13 @@ class Scraper:
 
     def send_msg(self, total_pending):
         try:
-            if self.acceptRequests == False:
-                self.p_api.api.sendMessage(
-                    self.user_id,
-                    f"Pending follow requests: {total_pending}\n\n"
-                    f"Date: {time.ctime()}\n\n"
-                    f"User: @{self.username}\n"
-                    f"User ID: {self.user_id}"
-                )
-            else:
-                self.p_api.api.sendMessage(
-                    self.user_id,
-                    "Accepting follow requests\n\n"
-                    f"Date: {time.ctime()}\n\n"
-                    f"User: @{self.username}\n"
-                    f"User ID: {self.user_id}"
-                )
+            self.p_api.api.sendMessage(
+                self.user_id,
+                f"Pending follow requests: {total_pending}\n\n"
+                f"Date: {time.ctime()}\n\n"
+                f"User: @{self.username}\n"
+                f"User ID: {self.user_id}"
+            )
         except Exception as e:
             print("Unable to send DM ->", e)
             print(self.p_api.api.LastResponse)
@@ -594,7 +592,7 @@ class Scraper:
 
                 if self.new_requests >= 150:
                     self.waiting = random.randint(900, 1200)
-                
+
                 self.pending_requests()
                 self.process_users()
                 self.remove = "0"
@@ -618,14 +616,14 @@ class Scraper:
 ██████╔╝█████╗  ██║   ██║██║   ██║█████╗  ███████╗   ██║       ███████╗██║     ███████║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝
 ██╔══██╗██╔══╝  ██║▄▄ ██║██║   ██║██╔══╝  ╚════██║   ██║       ╚════██║██║     ██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗
 ██║  ██║███████╗╚██████╔╝╚██████╔╝███████╗███████║   ██║       ███████║╚██████╗██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║
-╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝   ╚═╝       ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
+╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝   ╚═╝       ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═
         ''', "blue"), end="\n")
 
 if __name__ == "__main__":
     '''
     To accept follow requests -> Scraper(accept=True)
-    
+
     Will accept every run until your follow requests are below 200
     Can only accept a maximum amount of 200 requested users per run
     '''
-    Scraper(accept=False)
+    Scraper(accept=True)
