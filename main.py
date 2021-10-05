@@ -622,4 +622,4 @@ if __name__ == "__main__":
     '''
     To accept follow requests -> Scraper(accept=True)
     '''
-    Scraper(accept=True)
+    Scraper(accept=False)
