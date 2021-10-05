@@ -27,15 +27,12 @@ Instagram will stop showing you the exact amount of your follow requests once it
 
 ### Accepting follow requests
 Since it's recommended to start your count when your requests are below 200, there is an option to automatically approve all your pending follow requests. For each run, 200 users will be accepted until your pending requests are below the 200 limit. Once it's below 200, a file named ```accept.json``` will be created, so no more requests will be accepted when appending them to your total amount in ```username_pending_users.json```. Note that none of the users that get accepted will be appended to that JSON; only the users that request a follow after accepting is finished will be appended to the count. If you have already accepted followers, but wish to accept again, then you can delete ```accept.json```. 
-By changing ```accept``` to ```True``` at line 631, all your pending follow requests will be accepted. If it's set to ```False```, it will just directly move on to counting your incoming requests. 
+By changing ```accept``` to ```True``` at line 625, all your pending follow requests will be accepted. If it's set to ```False```, it will just directly move on to counting your incoming requests. 
 
 > ```py
 > if __name__ == "__main__":
 >     '''
 >     To accept follow requests -> Scraper(accept=True)
-> 
->     Will accept every run until your follow requests are below 200
->     Can only accept a maximum amount of 200 requested users per run
 >     '''
 >     Scraper(accept=False)
 > ```
