@@ -621,8 +621,5 @@ class Scraper:
 if __name__ == "__main__":
     '''
     To accept follow requests -> Scraper(accept=True)
-
-    Will accept every run until your follow requests are below 200
-    Can only accept a maximum amount of 200 requested users per run
     '''
-    Scraper(accept=False)
+    Scraper(accept=True)
