@@ -427,7 +427,7 @@ class Scraper:
         }
 
         r = self.scraper.get("https://i.instagram.com/api/v1/friendships/pending/", headers=headers)
-        print(f"\n{('-'*48)}\n\n[+] Pending follow requests")
+        print(f"\n{('═'*48)}\n\n[+] Pending follow requests")
 
         pending = []
         pending_total = 0
@@ -482,7 +482,7 @@ class Scraper:
             # Use this to get the rate of users
 
             self.new_requests = newRequest
-            print(f"\n\n{self.username} has {total_pending} pending follow requests")
+            print(f"\n{self.username} has {total_pending} pending follow requests")
             f.close()
             f2 = open(f"{self.username}_pending_users.json", "w")
             if self.acceptRequests:
@@ -498,7 +498,7 @@ class Scraper:
         else:
             with open(f"{self.username}_pending_users.json", "w") as f:
                 json.dump(self.pending_users, f, indent=4, sort_keys=True)
-            print(f"\n\n{self.username} has {self.pending_users['total_requests'][0]} pending follow requests")
+            print(f"\n{self.username} has {self.pending_users['total_requests'][0]} pending follow requests")
             total_pending = self.pending_users["total_requests"][0]
 
         self.send_msg(total_pending)
@@ -526,7 +526,6 @@ class Scraper:
         username = requested_user.get("username")
         accept = self.scraper.post(f"https://www.instagram.com/web/friendships/{id}/approve/", headers=headers)
         if 'status":"ok' in accept.text:
-            accepted += 1
             print(colored(f'[+] Accepted: @{username}', 'green'))
         else:
             print(colored('[-] Failed to accept user', 'red'))
@@ -616,7 +615,7 @@ class Scraper:
 ██████╔╝█████╗  ██║   ██║██║   ██║█████╗  ███████╗   ██║       ███████╗██║     ███████║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝
 ██╔══██╗██╔══╝  ██║▄▄ ██║██║   ██║██╔══╝  ╚════██║   ██║       ╚════██║██║     ██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗
 ██║  ██║███████╗╚██████╔╝╚██████╔╝███████╗███████║   ██║       ███████║╚██████╗██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║
-╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝   ╚═╝       ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═
+╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝   ╚═╝       ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
         ''', "blue"), end="\n")
 
 if __name__ == "__main__":
@@ -626,4 +625,4 @@ if __name__ == "__main__":
     Will accept every run until your follow requests are below 200
     Can only accept a maximum amount of 200 requested users per run
     '''
-    Scraper(accept=True)
+    Scraper(accept=False)
